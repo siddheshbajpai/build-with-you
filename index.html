@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Build with YOU — Learn Anything in Tech, 100% Free</title>
+<meta name="description" content="Build with YOU is a free, open tech school. Learn operating systems, web development, AI and more — every course free, every path curated by working engineers." />
+<meta name="theme-color" content="#FFD426" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='18' fill='%23FFD426'/><rect x='14' y='30' width='72' height='44' rx='8' fill='%23111'/><rect x='22' y='38' width='56' height='8' fill='%23FF5D8F'/><rect x='22' y='52' width='36' height='8' fill='%2335E0E8'/></svg>">
+<link rel="stylesheet" href="styles.css" />
+<noscript><style>.reveal{opacity:1 !important;transform:none !important}</style></noscript>
+</head>
+<body>
+
+<!-- ===================== FIXED ANIMATED BACKGROUND ===================== -->
+<div class="bg-layer" aria-hidden="true">
+  <canvas id="bgCanvas"></canvas>
+  <div class="bg-grid"></div>
+  <div class="bg-noise"></div>
+  <div class="bg-vignette"></div>
+</div>
+
+<!-- Scroll progress bar -->
+<div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+
+<!-- ===================== NAV ===================== -->
+<header class="nav" id="nav">
+  <a class="nav__brand" href="#top">
+    <span class="nav__mark" aria-hidden="true">
+      <span class="nav__mark-dot"></span>
+    </span>
+    <span class="nav__brand-text">Build with <b>YOU</b></span>
+  </a>
+
+  <nav class="nav__links" id="navLinks" aria-label="Primary">
+    <a href="#why">Why</a>
+    <a href="#paths">Paths</a>
+    <a href="#courses">Courses</a>
+    <a href="#resources">Resources</a>
+    <a href="#faq">FAQ</a>
+  </nav>
+
+  <a class="btn btn--sm btn--dark nav__cta" href="#courses">Start learning</a>
+
+  <button class="nav__toggle" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks">
+    <span></span><span></span><span></span>
+  </button>
+</header>
+
+<main id="top">
+
+<!-- ===================== HERO ===================== -->
+<section class="hero">
+  <div class="hero__badge reveal">
+    <span class="dot-pulse"></span>
+    100% FREE · NO SIGN-UP WALLS · OPEN TO EVERYONE
+  </div>
+
+  <h1 class="hero__title">
+    <span class="hero__line reveal" style="--d:.05s">Build</span>
+    <span class="hero__line hero__line--alt reveal" style="--d:.12s">with <span class="scribble">YOU</span></span>
+  </h1>
+
+  <p class="hero__sub reveal" style="--d:.2s">
+    A tech school where every course is <strong>completely free</strong>. Systems, web, AI, security —
+    pick a path, learn from working engineers, and ship real projects.
+    <strong>Your pace. Your machine. Your build.</strong>
+  </p>
+
+  <div class="hero__actions reveal" style="--d:.28s">
+    <a class="btn btn--big btn--yellow" href="#courses">
+      <span>Explore courses</span>
+      <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+    <a class="btn btn--big btn--ghost" href="#paths">
+      <span>See learning paths</span>
+    </a>
+  </div>
+
+  <div class="hero__stats reveal" style="--d:.36s">
+    <div class="stat">
+      <span class="stat__num" data-count="42">0</span>
+      <span class="stat__label">Free courses</span>
+    </div>
+    <div class="stat">
+      <span class="stat__num" data-count="120" data-suffix="+">0</span>
+      <span class="stat__label">Lessons &amp; labs</span>
+    </div>
+    <div class="stat">
+      <span class="stat__num" data-count="18" data-suffix="k">0</span>
+      <span class="stat__label">Builders</span>
+    </div>
+    <div class="stat">
+      <span class="stat__num" data-count="0" data-prefix="$">0</span>
+      <span class="stat__label">Cost. Ever.</span>
+    </div>
+  </div>
+
+  <div class="hero__scroll" aria-hidden="true">
+    <span>scroll</span>
+    <span class="hero__scroll-line"></span>
+  </div>
+</section>
+
+<!-- ===================== MARQUEE ===================== -->
+<div class="marquee-wrap" aria-hidden="true">
+  <div class="marquee">
+    <div class="marquee__track">
+      <span>MAKE YOUR OWN OS</span><span class="marquee__sep">✦</span>
+      <span>WRITE REAL CODE</span><span class="marquee__sep">✦</span>
+      <span>SHIP EVERYTHING</span><span class="marquee__sep">✦</span>
+      <span>EVERYTHING IS FREE</span><span class="marquee__sep">✦</span>
+      <span>BUILD WITH YOU</span><span class="marquee__sep">✦</span>
+      <span>MAKE YOUR OWN OS</span><span class="marquee__sep">✦</span>
+      <span>WRITE REAL CODE</span><span class="marquee__sep">✦</span>
+      <span>SHIP EVERYTHING</span><span class="marquee__sep">✦</span>
+      <span>EVERYTHING IS FREE</span><span class="marquee__sep">✦</span>
+      <span>BUILD WITH YOU</span><span class="marquee__sep">✦</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== WHY ===================== -->
+<section class="section" id="why">
+  <div class="section__head">
+    <span class="eyebrow">01 — why here</span>
+    <h2 class="section__title reveal">Everything you need to <span class="hl hl--yellow">learn tech</span>, in one place</h2>
+    <p class="section__lead reveal">No scattered tabs, no 40-minute video essays with no code. Build with YOU is one continuously-updated library where every course is free, hands-on, and ends with something you can actually run.</p>
+  </div>
+
+  <div class="bento">
+    <article class="card card--yellow reveal">
+      <div class="card__icon">⌨</div>
+      <h3>Learn by building</h3>
+      <p>Every module ends in code you compile, boot, or deploy. Theory is the shortest path to a working system — and we take it.</p>
+      <div class="card__tag">Hands-on labs</div>
+    </article>
+
+    <article class="card card--cyan reveal" style="--d:.06s">
+      <div class="card__icon">◎</div>
+      <h3>One curriculum, zero paywalls</h3>
+      <p>42 courses. 120+ lessons. 3D printers and kernel labs included. Every single one is free — because knowledge compounds.</p>
+      <div class="card__tag">100% free</div>
+    </article>
+
+    <article class="card card--pink reveal" style="--d:.12s">
+      <div class="card__icon">▤</div>
+      <h3>Docs that stay true</h3>
+      <p>Cheatsheets, diagrams, breakpoints and annotated source. Written by people who maintain the systems they teach.</p>
+      <div class="card__tag">Always updated</div>
+    </article>
+
+    <article class="card card--purple card--wide reveal" style="--d:.18s">
+      <div class="card__split">
+        <div>
+          <div class="card__icon">⌁</div>
+          <h3>Your progress is yours</h3>
+          <p>No account needed to start. When you do sign up, your streak, notes and project history sync across devices — because the best learners are the ones who never hit a paywall mid-lesson.</p>
+          <div class="card__tag">Local-first</div>
+        </div>
+        <ul class="ticklist">
+          <li>Progress tracked offline</li>
+          <li>Community code review</li>
+          <li>Certificates on project completion</li>
+          <li>Dark &amp; light themes</li>
+        </ul>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- ===================== LEARNING PATHS ===================== -->
+<section class="section section--alt" id="paths">
+  <div class="section__head">
+    <span class="eyebrow">02 — learning paths</span>
+    <h2 class="section__title reveal">Pick a direction. We lay out the <span class="hl hl--cyan">whole road</span>.</h2>
+    <p class="section__lead reveal">Each path is a sequenced route through the courses — with the order, the prerequisites and the project that proves you finished it.</p>
+  </div>
+
+  <div class="paths">
+    <article class="path path--a reveal">
+      <span class="path__num">A</span>
+      <h3>Systems &amp; Low-Level</h3>
+      <p class="path__desc">Boot a kernel, speak to hardware, understand what actually happens when you press a key.</p>
+      <ol class="path__steps">
+        <li><b>Make your own OS</b> — boot from scratch</li>
+        <li>Computer Architecture 101</li>
+        <li>Embedded C &amp; bare metal</li>
+        <li>Compilers, step by step</li>
+      </ol>
+      <div class="path__meta">4 courses · 34 labs</div>
+    </article>
+
+    <article class="path path--b reveal" style="--d:.08s">
+      <span class="path__num">B</span>
+      <h3>Web &amp; Product</h3>
+      <p class="path__desc">From a blank file to a deployed app that other people actually use.</p>
+      <ol class="path__steps">
+        <li>HTML, CSS &amp; the messy truth</li>
+        <li>JavaScript that scales</li>
+        <li>Backend &amp; databases</li>
+        <li>Ship it: CI/CD &amp; cloud</li>
+      </ol>
+      <div class="path__meta">5 courses · 41 labs</div>
+    </article>
+
+    <article class="path path--c reveal" style="--d:.16s">
+      <span class="path__num">C</span>
+      <h3>AI &amp; Data</h3>
+      <p class="path__desc">Math you need, models you can train, and honest notes on where AI fails.</p>
+      <ol class="path__steps">
+        <li>Python for absolute beginners</li>
+        <li>Linear algebra, visualised</li>
+        <li>Neural networks from scratch</li>
+        <li>Ship a real model</li>
+      </ol>
+      <div class="path__meta">5 courses · 28 labs</div>
+    </article>
+  </div>
+</section>
+
+<!-- ===================== COURSES ===================== -->
+<section class="section" id="courses">
+  <div class="section__head">
+    <span class="eyebrow">03 — courses</span>
+    <h2 class="section__title reveal">Courses. All of them <span class="hl hl--pink">free</span>.</h2>
+    <p class="section__lead reveal">Start with the flagship below, then pick up whatever else pulls you in. No login, no card, no countdown timer.</p>
+  </div>
+
+  <!-- ===== FEATURED COURSE: MAKE YOUR OWN OS ===== -->
+  <article class="course-hero reveal" id="make-your-own-os">
+    <div class="course-hero__media">
+      <div class="term" id="term">
+        <div class="term__bar">
+          <span class="term__dots"><i></i><i></i><i></i></span>
+          <span class="term__title">you@builder:~/os-dev</span>
+        </div>
+        <pre class="term__body" id="termBody"><span class="t-dim">$</span> <span class="t-cmd">make kernel</span>
+<span class="t-dim">[build]</span> linking bootloader ...
+<span class="t-dim">[build]</span> linking kernel.bin  <span class="t-ok">OK</span>
+<span class="t-dim">[run  ]</span> qemu -drive format=raw,file=os.bin
+<span class="t-dim">[ok  ]</span> GRUB loaded. 1280x800. Entering protected mode.
+<span class="t-hi">Build with YOU — you are now an OS developer.</span></pre>
+      </div>
+      <div class="course-hero__stamp">FREE</div>
+    </div>
+
+    <div class="course-hero__body">
+      <div class="course-hero__eyebrow">
+        <span class="pill pill--dark">Flagship course</span>
+        <span class="pill pill--outline">Course 01</span>
+        <span class="pill pill--outline">12 weeks</span>
+      </div>
+
+      <h3 class="course-hero__title">Make your own OS</h3>
+
+      <p class="course-hero__lead">
+        Write a real, bootable operating system from an empty folder. By the end you will have
+        a kernel with a bootloader, a bootloader with a bootloader, an interrupt-driven keyboard
+        driver, a working virtual memory manager and a filesystem — and a machine that boots
+        <strong>your code</strong>, not someone else's.
+      </p>
+
+      <ul class="hero-points">
+        <li><span>01</span> Boot from scratch on real hardware or QEMU</li>
+        <li><span>02</span> Assembly, C, and the layers between them</li>
+        <li><span>03</span> Interrupts, paging, processes &amp; a shell</li>
+        <li><span>04</span> Finish with a tiny filesystem and editor</li>
+      </ul>
+
+      <div class="course-hero__meta">
+        <div class="meta"><span class="meta__k">Level</span><span class="meta__v">Beginner → Advanced</span></div>
+        <div class="meta"><span class="meta__k">Lessons</span><span class="meta__v">48 video · 26 labs</span></div>
+        <div class="meta"><span class="meta__k">Language</span><span class="meta__v">C, x86-64 ASM</span></div>
+        <div class="meta"><span class="meta__k">Cost</span><span class="meta__v meta__v--free">FREE</span></div>
+      </div>
+
+      <div class="course-hero__actions">
+        <button class="btn btn--big btn--dark" data-enroll="os">
+          <span>Enroll Free</span>
+          <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <a class="btn btn--big btn--ghost" href="#curriculum">View curriculum</a>
+        <a class="btn btn--big btn--ghost" href="#resources">Syllabus</a>
+      </div>
+    </div>
+  </article>
+
+  <!-- ===== CURRICULUM ===== -->
+  <div class="curriculum" id="curriculum">
+    <div class="curriculum__head reveal">
+      <h3 class="curriculum__title">Curriculum — <span>Make your own OS</span></h3>
+      <p class="curriculum__lead">12 modules, unlocked as you go. Every module ends with a working artifact you can show off.</p>
+    </div>
+
+    <div class="modules" id="modules">
+      <details class="module reveal" open>
+        <summary class="module__head">
+          <span class="module__idx">01</span>
+          <span class="module__name">The Bare Metal World</span>
+          <span class="module__time">4 lessons</span>
+          <span class="module__toggle" aria-hidden="true"></span>
+        </summary>
+        <div class="module__body">
+          <p>Before an OS exists, there is only the CPU: registers, memory mapped IO, and a board that powers on straight into whatever bytes we flashed. In this module you meet the machine with nothing between you and it.</p>
+          <ul class="module__list">
+            <li>How a CPU boots: reset vector, BIOS, bootloader</li>
+            <li>Registers, flags, and the stack</li>
+            <li>Reading the Intel manual for the fun parts</li>
+            <li>Lab 1: <b>flash and boot your first 512 bytes</b></li>
+          </ul>
+        </div>
+      </details>
+
+      <details class="module reveal">
+        <summary class="module__head">
+          <span class="module__idx">02</span>
+          <span class="module__name">Writing the Bootloader</span>
+          <span class="module__time">6 lessons</span>
+          <span class="module__toggle" aria-hidden="true"></span>
+        </summary>
+        <div class="module__body">
+          <p>The bootloader is the first program on the machine: it sets up the stack, loads the kernel into memory, switches the CPU into protected or long mode, and jumps to the kernel entry point. Small program, enormous consequences.</p>
+          <ul class="module__list">
+            <li>Writing 16-bit real mode assembly</li>
+            <li>BIOS interrupts: disk, video, keyboard</li>
+            <li>Protected mode, GDT, and segment setup</li>
+            <li>Lab 2: <b>bootloader that loads a kernel and prints a character</b></li>
+          </ul>
+        </div>
+      </details>
+
+      <details class="module reveal">
+        <summary class="module__head">
+          <span class="module__idx">03</span>
+          <span class="module__name">Your First Kernel</span>
+          <span class="module__time">5 lessons</span>
+          <span class="module__toggle" aria-hidden="true"></span>
+        </summary>
+        <div class="module__body">
+          <p>Now you own the machine. We build a kernel entry point, a working driver/console, and the long jump to 64-bit mode so you can write the rest of the OS in comfortable C.</p>
+          <ul class="module__list">
+            <li>Kernel entry, 32 → 64 bit long mode</li>
+            <li>Compiling with the exact linker script you need</li>
+            <li>Memory-mapped VGA text output</li>
+            <li>Lab 3: <b>a kernel that prints "Build with YOU" to the screen</b></li>
+          </ul>
+        </div>
+      </details>
+
+      <details class="module reveal">
+        <summary class="module__head">
+          <span class="module__idx">04</span>
+          <span class="module__name">Interrupts &amp; Hardware</span>
+          <span class="module__time">6 lessons</span>
+          <span class="module__toggle" aria-hidden="true"></span>
+        </summary>
+        <div class="module__body">
+          <p>Hardware interrupts are how the outside world gets a word in. We set up the IDT, handle timer ticks, and drive the keyboard — the moment your OS starts feeling alive.</p>
+          <ul class="module__list">
+            <li>CPU interrupt handling, the IDT, and ISR stubs</li>
+            <li>Programmable Interval Timer, and why you want a tick</li>
+            <li>Scancodes to characters: a PS/2 keyboard driver</li>
+            <li>Lab 4: <b>type on the host keyboard and see it appear in your OS</b></li>
+          </ul>
+        </div>
+      </details>
+
+      <details class="module reveal">
+        <summary class="module__head">
+          <span class="module__idx">05</span>
+          <span class="module__name">Memory &amp; Paging</span>
+          <span class="module__time">6 lessons</span>
+          <span class="module__toggle" aria-hidden="true"></span>
+        </summary>
+        <div class="module__body">
+          <p>Physical memory is a raw, flat, terrifying canvas. We give the CPU a page table and turn that canvas into a protected, virtual address space.</p>
+          <ul class="module__list">
+            <li>Physical vs virtual addresses, and the cost of a lookup</li>
+            <li>CR3, page tables, TLB, and a page fault</li>
+            <li>Heap allocation: malloc from scratch</li>
+            <li>Lab 5: <b>a heap allocator that survives a fragmentation test</b></li>
+          </ul>
+        </div>
+      </details>
+
+      <details class="module reveal">
+        <summary class="module__head">
+          <span class="module__idx">06</span>
+          <span class="module__name">Processes &amp; Scheduling</span>
+          <span class="module__time">5 lessons</span>
+          <span class="module__toggle" aria-hidden="true"></span>
+        </summary>
+        <div class="module__body">
+          <p>Now the kernel can multitask: multiple programs, separate address spaces, and a scheduler deciding who gets the CPU next. This is where an OS stops being a demo and starts being an OS.</p>
+          <ul class="module__list">
+            <li>Task control blocks and context switching</li>
+            <li>Round-robin and priority scheduling</li>
+            <li>System calls: the user/kernel boundary</li>
+            <li>Lab 6: <b>run three programs at once and watch them switch</b></li>
+          </ul>
+        </div>
+      </details>
+
+      <details class="module reveal">
+        <summary class="module__head">
+          <span class="module__idx">07</span>
+          <span class="module__name">Filesystem &amp; Shell</span>
+          <span class="module__time">5 lessons</span>
+          <span class="module__toggle" aria-hidden="true"></span>
+        </summary>
+        <div class="module__body">
+          <p>Storage gives memory a past. We build a simple filesystem, mount it, and give the user a shell so the whole thing becomes usable by a human — not just you.</p>
+          <ul class="module__list">
+            <li>Reading and writing a RAM disk image</li>
+            <li>Inodes, directories and a FAT-style table</li>
+            <li>A command shell with pipes and redirection</li>
+            <li>Lab 7: <b>a shell where you can ls, cat, and cd your own disk</b></li>
+          </ul>
+        </div>
+      </details>
+
+      <details class="module reveal">
+        <summary class="module__head">
+          <span class="module__idx">08</span>
+          <span class="module__name">Finishing Touches</span>
+          <span class="module__time">4 lessons</span>
+          <span class="module__toggle" aria-hidden="true"></span>
+        </summary>
+        <div class="module__body">
+          <p>Polish, portability and the bits that make a demo feel like a product: a text editor, drivers, and getting your OS onto a USB stick for real hardware.</p>
+          <ul class="module__list">
+            <li>Write a tiny editor inside your OS</li>
+            <li>Drivers, serial ports, and a basic driver model</li>
+            <li>Booting your OS on real hardware</li>
+            <li>Final project: <b>ship your OS as a bootable USB image</b></li>
+          </ul>
+        </div>
+      </details>
+    </div>
+
+    <div class="curriculum__side reveal">
+      <div class="side-card side-card--yellow">
+        <h4>What you need</h4>
+        <ul class="dotlist">
+          <li>A 64-bit PC (any OS)</li>
+          <li><b>Free</b>: QEMU, a C compiler, nasm, make</li>
+          <li>Curiosity and patience</li>
+        </ul>
+      </div>
+      <div class="side-card side-card--cyan">
+        <h4>What you leave with</h4>
+        <ul class="dotlist">
+          <li>A bootable OS on a USB stick</li>
+          <li>Debugging instincts for low-level bugs</li>
+          <li>A portfolio project nobody can buy</li>
+        </ul>
+      </div>
+      <div class="side-card side-card--pink">
+        <h4>Free to finish</h4>
+        <p>Every lesson, lab, source file and update is free. If you get stuck, the community forum has a channel per module.</p>
+        <a class="btn btn--dark btn--sm" href="#community"><span>Join the builders</span></a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== MORE COURSES ===== -->
+  <div class="section__head section__head--sub">
+    <span class="eyebrow">03.2 — more courses</span>
+    <h3 class="section__title reveal">Everything else, same price: <span class="hl hl--yellow">nothing</span></h3>
+  </div>
+
+  <div class="course-grid">
+    <article class="ccard ccard--cyan reveal">
+      <span class="ccard__tag">Course 02</span>
+      <h3>Web from Scratch</h3>
+      <p>HTML, CSS and JavaScript explained the way a browser actually works — then a full-stack project.</p>
+      <div class="ccard__foot"><span>28 lessons</span><span class="ccard__free">FREE</span></div>
+      <button class="btn btn--dark btn--sm ccard__btn" data-enroll="web">Enroll Free</button>
+    </article>
+
+    <article class="ccard ccard--pink reveal" style="--d:.06s">
+      <span class="ccard__tag">Course 03</span>
+      <h3>Python for Absolute Beginners</h3>
+      <p>Your first program in 20 minutes, then scripts, files, APIs and a bot that runs while you sleep.</p>
+      <div class="ccard__foot"><span>24 lessons</span><span class="ccard__free">FREE</span></div>
+      <button class="btn btn--dark btn--sm ccard__btn" data-enroll="python">Enroll Free</button>
+    </article>
+
+    <article class="ccard ccard--yellow reveal" style="--d:.12s">
+      <span class="ccard__tag">Course 04</span>
+      <h3>Computer Architecture</h3>
+      <p>Caches, pipelines and branch prediction, visualised. The theory that makes your OS course click.</p>
+      <div class="ccard__foot"><span>22 lessons</span><span class="ccard__free">FREE</span></div>
+      <button class="btn btn--dark btn--sm ccard__btn" data-enroll="arch">Enroll Free</button>
+    </article>
+
+    <article class="ccard ccard--purple reveal" style="--d:.18s">
+      <span class="ccard__tag">Course 05</span>
+      <h3>Neural Networks from Scratch</h3>
+      <p>No frameworks. Just tensors, gradients and a network you write with your own hands in NumPy.</p>
+      <div class="ccard__foot"><span>26 lessons</span><span class="ccard__free">FREE</span></div>
+      <button class="btn btn--dark btn--sm ccard__btn" data-enroll="neural">Enroll Free</button>
+    </article>
+
+    <article class="ccard ccard--orange reveal" style="--d:.24s">
+      <span class="ccard__tag">Course 06</span>
+      <h3>Linux &amp; the Shell</h3>
+      <p>Processes, pipes, permissions and a shell you stop googling and start writing.</p>
+      <div class="ccard__foot"><span>19 lessons</span><span class="ccard__free">FREE</span></div>
+      <button class="btn btn--dark btn--sm ccard__btn" data-enroll="linux">Enroll Free</button>
+    </article>
+
+    <article class="ccard ccard--green reveal" style="--d:.3s">
+      <span class="ccard__tag">Course 07</span>
+      <h3>Web Security Basics</h3>
+      <p>OWASP top 10 with live labs: XSS, SQLi, CSRF — break them on purpose, then fix them for good.</p>
+      <div class="ccard__foot"><span>21 lessons</span><span class="ccard__free">FREE</span></div>
+      <button class="btn btn--dark btn--sm ccard__btn" data-enroll="security">Enroll Free</button>
+    </article>
+  </div>
+</section>
+
+<!-- ===================== RESOURCES ===================== -->
+<section class="section section--alt" id="resources">
+  <div class="section__head">
+    <span class="eyebrow">04 — resources</span>
+    <h2 class="section__title reveal">All the information, <span class="hl hl--yellow">gathered</span></h2>
+    <p class="section__lead reveal">Reference material that sits beside the lessons: searchable docs, annotated diagrams, cheat sheets and a glossary that actually explains things.</p>
+  </div>
+
+  <div class="res-grid">
+    <a class="res reveal" href="#courses">
+      <span class="res__icon">▤</span>
+      <h3>Docs &amp; Guides</h3>
+      <p>Every concept in text form, searchable, with diagrams.</p>
+      <span class="res__go">Open →</span>
+    </a>
+    <a class="res reveal" href="#courses" style="--d:.06s">
+      <span class="res__icon">⌗</span>
+      <h3>Cheat Sheets</h3>
+      <p>One-page references for assembly, git, regex and more.</p>
+      <span class="res__go">Open →</span>
+    </a>
+    <a class="res reveal" href="#paths" style="--d:.12s">
+      <span class="res__icon">⛤</span>
+      <h3>Roadmaps</h3>
+      <p>Visual maps of every path, with the "why this order" notes.</p>
+      <span class="res__go">Open →</span>
+    </a>
+    <a class="res reveal" href="#community" style="--d:.18s">
+      <span class="res__icon">◈</span>
+      <h3>Community Forum</h3>
+      <p>Ask per module. Answer to level up. No gatekeeping.</p>
+      <span class="res__go">Open →</span>
+    </a>
+  </div>
+</section>
+
+<!-- ===================== COMMUNITY ===================== -->
+<section class="section" id="community">
+  <div class="section__head">
+    <span class="eyebrow">05 — community</span>
+    <h2 class="section__title reveal">Built by learners, <span class="hl hl--pink">for learners</span></h2>
+  </div>
+
+  <div class="quotes">
+    <figure class="quote reveal">
+      <blockquote>“I wrote a bootloader on a Sunday and booted it on a laptop on Monday. Nothing else online felt this real.”</blockquote>
+      <figcaption><span class="avatar avatar--pink">R</span><span><b>Rhea</b><br/>OS course · Module 02</span></figcaption>
+    </figure>
+    <figure class="quote reveal" style="--d:.08s">
+      <blockquote>“Every course free, and the labs actually compile. I stopped hoarding tutorials and started finishing things.”</blockquote>
+      <figcaption><span class="avatar avatar--cyan">D</span><span><b>Devansh</b><br/>Web path · Cohort 7</span></figcaption>
+    </figure>
+    <figure class="quote reveal" style="--d:.16s">
+      <blockquote>“The paging module fixed a decade of vague understanding. Diagrams that make sense the first time.”</blockquote>
+      <figcaption><span class="avatar avatar--yellow">M</span><span><b>Mei</b><br/>Architecture · Cohort 3</span></figcaption>
+    </figure>
+  </div>
+
+  <div class="cta-band reveal">
+    <div class="cta-band__text">
+      <h3>Start with <span>Make your own OS</span></h3>
+      <p>Free, complete, and it starts with the first boot. No account needed.</p>
+    </div>
+    <a class="btn btn--big btn--dark" href="#make-your-own-os"><span>Go to the course</span></a>
+  </div>
+</section>
+
+<!-- ===================== FAQ ===================== -->
+<section class="section section--alt" id="faq">
+  <div class="section__head">
+    <span class="eyebrow">06 — faq</span>
+    <h2 class="section__title reveal">Questions, answered</h2>
+  </div>
+
+  <div class="faq">
+    <details class="faq__item reveal">
+      <summary>Is it really free?<span class="faq__icon" aria-hidden="true"></span></summary>
+      <p>Yes — every course, lab, source file and future update. No subscription, no trial period, no "premium" lessons. The only thing we'd ask for is that you share what you build.</p>
+    </details>
+    <details class="faq__item reveal">
+      <summary>Do I need to know how to code?<span class="faq__icon" aria-hidden="true"></span></summary>
+      <p>Not for most paths. <b>Make your own OS</b> starts from zero: it teaches assembly from the first line. If you know Python or JavaScript already, you'll move faster but you can skip straight to the labs.</p>
+    </details>
+    <details class="faq__item reveal">
+      <summary>What do I need for the OS course?<span class="faq__icon" aria-hidden="true"></span></summary>
+      <p>A 64-bit machine and a handful of free tools (QEMU, GCC, NASM, make). We install everything together in Module 01 — Windows, Linux or macOS all work.</p>
+    </details>
+    <details class="faq__item reveal">
+      <summary>How long until I can boot my own OS?<span class="faq__icon" aria-hidden="true"></span></summary>
+      <p>Most people print to the screen in their first weekend (Module 03) and boot a real OS from a USB stick by week 6–8. Take your time; the labs are self-contained.</p>
+    </details>
+    <details class="faq__item reveal">
+      <summary>Do I get a certificate?<span class="faq__icon" aria-hidden="true"></span></summary>
+      <p>You get something better — a working project. Certificates are issued for completed paths if you want the badge for your CV, free of charge too.</p>
+    </details>
+  </div>
+</section>
+
+</main>
+
+<!-- ===================== FOOTER ===================== -->
+<footer class="footer">
+  <div class="footer__top">
+    <div class="footer__brand">
+      <h2 class="footer__logo">Build with <span>YOU</span></h2>
+      <p>Free tech education, for everyone who wants to actually build. No paywalls, no fluff.</p>
+    </div>
+    <div class="footer__cols">
+      <div class="footer__col">
+        <h4>Learn</h4>
+        <a href="#make-your-own-os">Make your own OS</a>
+        <a href="#paths">Learning paths</a>
+        <a href="#resources">Resources</a>
+      </div>
+      <div class="footer__col">
+        <h4>Community</h4>
+        <a href="#community">Forum</a>
+        <a href="#community">Discord</a>
+        <a href="#community">Contribute</a>
+      </div>
+      <div class="footer__col">
+        <h4>About</h4>
+        <a href="#why">Why free</a>
+        <a href="#faq">FAQ</a>
+        <a href="#top">Contact</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer__bottom">
+    <span>© <span id="year">2026</span> Build with YOU — built for builders.</span>
+    <span class="footer__made">Made with ♥ and a lot of terminal windows</span>
+  </div>
+</footer>
+
+<!-- ===================== COURSE MODAL ===================== -->
+<div class="modal" id="courseModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal__backdrop" data-close></div>
+
+  <div class="modal__panel">
+    <header class="modal__head">
+      <div class="modal__headtext">
+        <div class="modal__eyebrow"><span id="modalBadge">Course</span> <span id="modalTag" class="modal__tag"></span></div>
+        <h2 class="modal__title" id="modalTitle">Course</h2>
+        <p class="modal__lead" id="modalLead"></p>
+      </div>
+      <button class="modal__close" data-close aria-label="Close course details">
+        <span aria-hidden="true">✕</span>
+      </button>
+    </header>
+
+    <div class="modal__meta" id="modalMeta"></div>
+
+    <div class="modal__body">
+      <!-- phase navigation -->
+      <nav class="phases" id="phaseList" aria-label="Course phases"></nav>
+
+      <!-- phase details / paywall -->
+      <section class="pd" id="phaseDetail" aria-live="polite"></section>
+    </div>
+
+    <footer class="modal__foot">
+      <span class="modal__footnote" id="modalFootnote">Phase 1 is free, forever. No card, no sign-up.</span>
+      <button class="btn btn--sm btn--ghost" data-close>Close</button>
+    </footer>
+  </div>
+</div>
+
+<!-- toast -->
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="script.js"></script>
+</body>
+</html>
