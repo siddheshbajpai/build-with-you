@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Checkout — Pro membership | Build with YOU</title>
+<meta name="description" content="Join Build with YOU Pro membership for $4.99/month. Unlock every phase of every course and directly support the creator." />
+<meta name="theme-color" content="#FFD426" />
+<meta name="robots" content="noindex" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='18' fill='%23FFD426'/><rect x='14' y='30' width='72' height='44' rx='8' fill='%23111'/><rect x='22' y='38' width='56' height='8' fill='%23FF5D8F'/><rect x='22' y='52' width='36' height='8' fill='%2335E0E8'/></svg>">
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body class="checkout-body">
+
+<!-- fixed animated background (same engine as the site) -->
+<div class="bg-layer" aria-hidden="true">
+  <canvas id="bgCanvas"></canvas>
+  <div class="bg-grid"></div>
+  <div class="bg-noise"></div>
+  <div class="bg-vignette"></div>
+</div>
+
+<header class="checkout-nav">
+  <a class="checkout-nav__brand" href="index.html">
+    <span class="nav__mark" aria-hidden="true"><span class="nav__mark-dot"></span></span>
+    <span class="nav__brand-text">Build with <b>YOU</b></span>
+  </a>
+  <a class="checkout-nav__back" href="index.html#membership">
+    <span aria-hidden="true">←</span> Back to the site
+  </a>
+</header>
+
+<main class="checkout">
+
+  <!-- ===================== SUMMARY ===================== -->
+  <aside class="summary">
+    <span class="summary__eyebrow">Order summary</span>
+    <h1 class="summary__title">Pro <span>membership</span></h1>
+
+    <div class="summary__product">
+      <div class="summary__producthead">
+        <span class="summary__badge">PRO</span>
+        <span class="summary__cycle">Billed monthly · cancel anytime</span>
+      </div>
+      <h2>Build with YOU Pro</h2>
+      <p id="summaryCourse">Unlocks every phase of every course — including the deep phases of Make your own OS.</p>
+      <div class="summary__price"><b>$4.99</b><span>/ month</span></div>
+      <div class="summary__due">Due today <b>$4.99</b> · then $4.99 every month until you cancel</div>
+    </div>
+
+    <ul class="summary__perks">
+      <li>Every phase of every course unlocked</li>
+      <li>Intermediate &amp; advanced labs, source &amp; datasets</li>
+      <li>Priority code review in the forum</li>
+      <li>New courses and labs every month</li>
+      <li>Certificates for every completed phase</li>
+    </ul>
+
+    <div class="summary__why">
+      <span class="summary__whyicon">♥</span>
+      <p><b>100% of Pro goes to the creator.</b> It funds the filming rig, the hardware for labs,
+      the writing time and the monthly updates. Phase 1 stays free so nobody is locked out of learning.</p>
+    </div>
+  </aside>
+
+  <!-- ===================== FORM ===================== -->
+  <section class="pay">
+    <form class="pay__form" id="payForm" novalidate>
+      <div class="pay__step">
+        <span class="pay__stepnum">1</span>
+        <h2>Your email</h2>
+        <p class="pay__hint">Your receipt, your login and your progress go here.</p>
+        <label class="field">
+          <span class="field__label">Email address</span>
+          <input class="field__input" type="email" id="email" name="email" placeholder="you@example.com" autocomplete="email" required />
+          <span class="field__error" data-for="email"></span>
+        </label>
+      </div>
+
+      <div class="pay__step">
+        <span class="pay__stepnum">2</span>
+        <h2>Payment</h2>
+        <p class="pay__hint">Encrypted end to end. We never store your card number.</p>
+
+        <label class="field">
+          <span class="field__label">Name on card</span>
+          <input class="field__input" type="text" id="cardname" name="cardname" placeholder="Siddhesh Bajpai" autocomplete="cc-name" required />
+          <span class="field__error" data-for="cardname"></span>
+        </label>
+
+        <label class="field">
+          <span class="field__label">Card number</span>
+          <span class="field__wrap">
+            <input class="field__input field__input--mono" type="text" id="cardnumber" name="cardnumber" placeholder="4242 4242 4242 4242" inputmode="numeric" autocomplete="cc-number" maxlength="23" required />
+            <span class="field__brand" id="cardBrand">CARD</span>
+          </span>
+          <span class="field__error" data-for="cardnumber"></span>
+        </label>
+
+        <div class="field-row">
+          <label class="field">
+            <span class="field__label">Expiry</span>
+            <input class="field__input field__input--mono" type="text" id="expiry" name="expiry" placeholder="MM/YY" inputmode="numeric" autocomplete="cc-exp" maxlength="5" required />
+            <span class="field__error" data-for="expiry"></span>
+          </label>
+          <label class="field">
+            <span class="field__label">CVC</span>
+            <input class="field__input field__input--mono" type="text" id="cvc" name="cvc" placeholder="123" inputmode="numeric" autocomplete="cc-csc" maxlength="4" required />
+            <span class="field__error" data-for="cvc"></span>
+          </label>
+        </div>
+
+        <label class="field">
+          <span class="field__label">Country</span>
+          <select class="field__input" id="country" name="country">
+            <option>India</option>
+            <option>United States</option>
+            <option>United Kingdom</option>
+            <option>Canada</option>
+            <option>Australia</option>
+            <option>Germany</option>
+            <option>Other</option>
+          </select>
+        </label>
+
+        <div class="pay__trust">
+          <span>🔒 Secure checkout</span>
+          <span>↻ Cancel anytime</span>
+          <span>✉ Receipt by email</span>
+        </div>
+
+        <button class="btn btn--big btn--yellow pay__submit" type="submit" id="payBtn">
+          <span>Pay $4.99 &amp; join Pro</span>
+          <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+
+        <p class="pay__fine">
+          By joining you agree to the membership terms. This demo checkout does not process a real payment —
+          no card is charged and no data leaves your browser.
+        </p>
+      </div>
+    </form>
+
+    <!-- success state -->
+    <div class="pay__success" id="paySuccess" hidden>
+      <span class="pay__tick">✓</span>
+      <h2>You're Pro.</h2>
+      <p id="successMsg">Every phase of every course is unlocked. The creator says thank you.</p>
+      <div class="pay__successbox">
+        <div><span>Plan</span><b>Pro membership</b></div>
+        <div><span>Amount</span><b>$4.99 / month</b></div>
+        <div><span>Next billing</span><b id="nextBilling">in 30 days</b></div>
+        <div><span>Receipt</span><b id="receiptEmail">sent by email</b></div>
+      </div>
+      <a class="btn btn--big btn--dark" id="continueBtn" href="index.html"><span>Continue to the course</span></a>
+      <a class="pay__backlink" href="index.html#membership">Browse all courses instead</a>
+    </div>
+  </section>
+</main>
+
+<footer class="checkout-foot">
+  <span>© 2026 Build with YOU</span>
+  <span>Questions? <a href="index.html#faq">Read the pricing FAQ</a></span>
+</footer>
+
+<script src="checkout.js"></script>
+</body>
+</html>

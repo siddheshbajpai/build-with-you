@@ -735,6 +735,15 @@
 
   const PRO_PRICE = '4.99';
 
+  // Pro status is remembered in the browser, so joining once unlocks
+  // every course — on this device, forever.
+  function readPro() {
+    try { return localStorage.getItem('bwy_pro') === '1'; } catch (e) { return false; }
+  }
+  function writePro() {
+    try { localStorage.setItem('bwy_pro', '1'); } catch (e) {}
+  }
+
   const modal = document.getElementById('courseModal');
   const elBadge = document.getElementById('modalBadge');
   const elTag = document.getElementById('modalTag');
@@ -747,8 +756,9 @@
   const toast = document.getElementById('toast');
 
   let activeCourse = null;
+  let activeCourseId = null;
   let activePhase = null;
-  let proActive = false;
+  let proActive = readPro();
   let lastFocused = null;
 
   function phaseNumber(p) {
@@ -822,7 +832,7 @@
         '<span class="pd__lockicon">&#128274;</span>' +
         '<h4>Locked &mdash; complete Phase ' + (n - 1) + ' to unlock</h4>' +
         '<p>Phase ' + (n - 1) + ' &mdash; <b>' + escapeHtml(prev ? prev.name : '') + '</b> &mdash; is free and waiting for you. ' +
-        'Or unlock every phase of every course right now with Pro: a nominal <b>$' + PRO_PRICE + ' per month</b>.</p>' +
+        'Or unlock every phase of every course right now with Pro: a nominal <b>$' + PRO_PRICE + ' per month</b>, and every dollar of it funds the next course.</p>' +
         '<div class="pd__cta" style="justify-content:center">' +
           '<button class="btn btn--big btn--ghost" type="button" data-goto="' + (prev ? prev.id : '') + '">Back to Phase ' + (n - 1) + ' (free)</button>' +
         '</div>' +
@@ -837,6 +847,7 @@
           '<li>All 42 courses, every phase, no limits</li>' +
           '<li>Downloadable labs, source code and datasets</li>' +
           '<li>Certificates for completed phases</li>' +
+          '<li>100% of Pro directly funds the creator</li>' +
         '</ul>' +
         '<div class="pd__payactions">' +
           '<button class="btn btn--big btn--yellow" type="button" data-join>Join Pro &mdash; $' + PRO_PRICE + ' / month</button>' +
@@ -851,7 +862,7 @@
     activePhase = p.id;
     if (isLocked(p)) {
       renderLockedPhase(p);
-      elFootnote.textContent = 'Phase 1 is free forever. Phases 2–3 need Pro ($' + PRO_PRICE + '/month).';
+      elFootnote.textContent = 'Phase 1 is free forever. Phases 2–3 need Pro ($' + PRO_PRICE + '/month) — which supports the creator.';
     } else {
       renderOpenPhase(p);
       elFootnote.textContent = 'Phase 1 is free, forever. No card, no sign-up.';
@@ -859,11 +870,12 @@
     renderPhaseRail();
   }
 
-  function openCourse(id) {
+  function openCourse(id, phaseId) {
     const course = COURSES[id];
     if (!course) return;
     activeCourse = course;
-    activePhase = course.phases[0].id;
+    activeCourseId = id;
+    activePhase = (phaseId && course.phases.some((p) => p.id === phaseId)) ? phaseId : course.phases[0].id;
 
     elBadge.textContent = course.badge;
     elTag.textContent = course.tag;
@@ -944,14 +956,11 @@
 
     const join = e.target.closest('[data-join]');
     if (join) {
-      join.disabled = true;
-      join.textContent = 'Activating…';
-      setTimeout(() => {
-        proActive = true;
-        join.disabled = false;
-        showToast('Pro activated — every phase is unlocked. Welcome aboard!');
-        renderDetail();
-      }, 700);
+      // hand over to the checkout page, keeping the course context
+      const q = 'checkout.html?course=' + encodeURIComponent(activeCourseId || 'os') +
+                '&phase=' + encodeURIComponent(activePhase) +
+                '&name=' + encodeURIComponent(activeCourse ? activeCourse.title : '');
+      window.location.href = q;
       return;
     }
 
@@ -966,6 +975,20 @@
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && modal.classList.contains('is-open')) closeModal();
   });
+
+  // Returning from checkout: ?course=os&phase=p2 -> reopen that course
+  (function openFromCheckout() {
+    const qp = new URLSearchParams(window.location.search);
+    const cid = qp.get('course');
+    if (!cid || !COURSES[cid]) return;
+    // jump to the courses section first (the modal locks body scroll)
+    const target = document.getElementById('courses');
+    if (target) {
+      const y = target.getBoundingClientRect().top + window.scrollY - 60;
+      window.scrollTo({ top: y, left: 0, behavior: 'auto' });
+    }
+    openCourse(cid, qp.get('phase'));
+  })();
 
   /* ------------------------------------------------------------
      12. LIFECYCLE
