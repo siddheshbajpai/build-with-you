@@ -231,8 +231,11 @@
 
       // pretend a payment gateway round-trip
       setTimeout(() => {
-        // unlock Pro for this browser
+        // unlock Pro for this browser (and for the signed-in account)
         try { localStorage.setItem('bwy_pro', '1'); } catch (err) {}
+        if (window.Auth) {
+          try { Auth.setPro(true); } catch (err) {}
+        }
 
         const email = document.getElementById('email').value.trim();
         const next = new Date();

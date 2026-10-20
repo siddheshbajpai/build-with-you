@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>My account — Build with YOU</title>
+<meta name="description" content="Your Build with YOU account — plan, theme and progress." />
+<meta name="theme-color" content="#FFD426" />
+<meta name="robots" content="noindex" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='18' fill='%23FFD426'/><rect x='14' y='30' width='72' height='44' rx='8' fill='%23111'/><rect x='22' y='38' width='56' height='8' fill='%23FF5D8F'/><rect x='22' y='52' width='36' height='8' fill='%2335E0E8'/></svg>">
+<link rel="stylesheet" href="styles.css" />
+<script>
+  (function () {
+    try {
+      var pref = JSON.parse(localStorage.getItem('bwy_theme') || 'null') ||
+                 JSON.parse(localStorage.getItem('bwy_default_theme') || '"light"');
+      var t = (pref === 'system')
+        ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+        : (pref || 'light');
+      document.documentElement.setAttribute('data-theme', t);
+      document.documentElement.style.colorScheme = t;
+    } catch (e) {}
+  })();
+</script>
+</head>
+<body class="auth-body">
+
+<div class="bg-layer" aria-hidden="true">
+  <canvas id="bgCanvas"></canvas>
+  <div class="bg-grid"></div>
+  <div class="bg-noise"></div>
+  <div class="bg-vignette"></div>
+</div>
+
+<header class="checkout-nav">
+  <a class="checkout-nav__brand" href="index.html">
+    <span class="nav__mark" aria-hidden="true"><span class="nav__mark-dot"></span></span>
+    <span class="nav__brand-text">Build with <b>YOU</b></span>
+  </a>
+  <div class="checkout-nav__actions">
+    <a class="checkout-nav__back" href="index.html"><span aria-hidden="true">←</span> Site</a>
+    <button class="checkout-nav__back" type="button" id="signOutBtn">Sign out</button>
+  </div>
+</header>
+
+<main class="admin">
+  <div class="admin__head">
+    <div>
+      <span class="eyebrow">Your account</span>
+      <h1 class="admin__title" id="accTitle">Hello</h1>
+      <p class="admin__lead" id="accLead">Your plan, theme and progress in one place.</p>
+    </div>
+    <div class="admin__me" id="accMe"></div>
+  </div>
+
+  <div class="admin__locked" id="locked" hidden>
+    <span class="admin__lockicon">👤</span>
+    <h2>You are not signed in</h2>
+    <p>Sign in to see your plan, unlock Pro and keep your progress synced.</p>
+    <a class="btn btn--big btn--dark" href="login.html?next=account.html"><span>Sign in</span></a>
+    <a class="admin__backlink" href="index.html">← Back to the site</a>
+  </div>
+
+  <div id="panels" hidden>
+    <section class="admin__panel admin__panel--wide">
+      <div class="admin__panelhead">
+        <h2>Theme</h2>
+        <p>Your preference is remembered on this device.</p>
+      </div>
+      <div class="themes" id="themes">
+        <button class="theme" type="button" data-theme-mode="light">
+          <span class="theme__preview theme__preview--light"><i></i><i></i><i></i></span>
+          <span class="theme__name">Light</span><span class="theme__state">Active</span>
+        </button>
+        <button class="theme" type="button" data-theme-mode="dark">
+          <span class="theme__preview theme__preview--dark"><i></i><i></i><i></i></span>
+          <span class="theme__name">Dark</span><span class="theme__state">Active</span>
+        </button>
+        <button class="theme" type="button" data-theme-mode="system">
+          <span class="theme__preview theme__preview--system"><i></i><i></i><i></i></span>
+          <span class="theme__name">System</span><span class="theme__state">Active</span>
+        </button>
+      </div>
+    </section>
+
+    <section class="admin__panel">
+      <div class="admin__panelhead">
+        <h2>Membership</h2>
+        <p>Your current access level.</p>
+      </div>
+      <div class="admin__stat">
+        <span class="admin__statlabel">Plan</span>
+        <span class="admin__statvalue" id="planValue">—</span>
+      </div>
+      <div class="admin__stat">
+        <span class="admin__statlabel">Signed in via</span>
+        <span class="admin__statvalue" id="providerValue">—</span>
+      </div>
+      <div class="admin__stat">
+        <span class="admin__statlabel">Member since</span>
+        <span class="admin__statvalue" id="sinceValue">—</span>
+      </div>
+      <a class="btn btn--big btn--yellow admin__wide" id="planBtn" href="checkout.html">Join Pro — $4.99/mo</a>
+      <a class="admin__backlink" id="adminLink" href="admin.html" hidden>Open the admin console →</a>
+    </section>
+
+    <section class="admin__panel admin__panel--wide">
+      <div class="admin__panelhead">
+        <h2>My courses</h2>
+        <p>Everything you have started. Phase 1 of every course stays free.</p>
+      </div>
+      <div class="members" id="myCourses"></div>
+    </section>
+  </div>
+</main>
+
+<footer class="checkout-foot">
+  <span>© 2026 Build with YOU</span>
+  <span><a href="index.html#membership">Membership</a> · <a href="index.html#faq">FAQ</a></span>
+</footer>
+
+<script src="auth.config.js"></script>
+<script src="auth.js"></script>
+<script src="account.js"></script>
+</body>
+</html>

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Sign in — Build with YOU</title>
+<meta name="description" content="Sign in to Build with YOU with Google, Discord or GitHub. Unlock Pro membership and sync your progress." />
+<meta name="theme-color" content="#FFD426" />
+<meta name="robots" content="noindex" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='18' fill='%23FFD426'/><rect x='14' y='30' width='72' height='44' rx='8' fill='%23111'/><rect x='22' y='38' width='56' height='8' fill='%23FF5D8F'/><rect x='22' y='52' width='36' height='8' fill='%2335E0E8'/></svg>">
+<link rel="stylesheet" href="styles.css" />
+<script>
+  /* apply the saved theme before first paint (no flash) */
+  (function () {
+    try {
+      var pref = JSON.parse(localStorage.getItem('bwy_theme') || 'null') ||
+                 JSON.parse(localStorage.getItem('bwy_default_theme') || '"light"');
+      var t = (pref === 'system')
+        ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+        : (pref || 'light');
+      document.documentElement.setAttribute('data-theme', t);
+      document.documentElement.style.colorScheme = t;
+    } catch (e) {}
+  })();
+</script>
+</head>
+<body class="auth-body">
+
+<div class="bg-layer" aria-hidden="true">
+  <canvas id="bgCanvas"></canvas>
+  <div class="bg-grid"></div>
+  <div class="bg-noise"></div>
+  <div class="bg-vignette"></div>
+</div>
+
+<header class="checkout-nav">
+  <a class="checkout-nav__brand" href="index.html">
+    <span class="nav__mark" aria-hidden="true"><span class="nav__mark-dot"></span></span>
+    <span class="nav__brand-text">Build with <b>YOU</b></span>
+  </a>
+  <a class="checkout-nav__back" href="index.html"><span aria-hidden="true">←</span> Back to the site</a>
+</header>
+
+<main class="auth">
+
+  <!-- ===================== LEFT: THE PITCH ===================== -->
+  <section class="auth__pitch">
+    <span class="eyebrow">Members area</span>
+    <h1 class="auth__title">Sign in.<br /><span>Keep building.</span></h1>
+    <p class="auth__lead">
+      One account for every course, every phase and every project you ship.
+      Phase 1 stays free forever — signing in just keeps your place.
+    </p>
+
+    <ul class="auth__benefits">
+      <li><span>01</span> Progress, notes and streaks synced</li>
+      <li><span>02</span> Pro membership in one click</li>
+      <li><span>03</span> Certificates for every phase you finish</li>
+      <li><span>04</span> Light &amp; dark themes</li>
+    </ul>
+
+    <div class="auth__adminbox">
+      <span class="auth__admintag">Admin account</span>
+      <code>admin@buildwithyou.dev</code>
+      <code>Admin@2026</code>
+      <span class="auth__adminhint">Full Pro access + the theme &amp; user controls.</span>
+    </div>
+  </section>
+
+  <!-- ===================== RIGHT: THE FORM ===================== -->
+  <section class="auth__panel">
+    <div class="auth__tabs" role="tablist">
+      <button class="auth__tab is-active" id="tabSignIn" role="tab" aria-selected="true" data-mode="signin">Sign in</button>
+      <button class="auth__tab" id="tabSignUp" role="tab" aria-selected="false" data-mode="signup">Create account</button>
+    </div>
+
+    <!-- OAuth -->
+    <div class="auth__providers" id="providers"></div>
+
+    <div class="auth__or"><span>or with email</span></div>
+
+    <form class="auth__form" id="authForm" novalidate>
+      <label class="field" id="nameField" hidden>
+        <span class="field__label">Full name</span>
+        <input class="field__input" type="text" id="name" name="name" placeholder="Siddhesh Bajpai" autocomplete="name" />
+      </label>
+
+      <label class="field">
+        <span class="field__label">Email address</span>
+        <input class="field__input" type="email" id="email" name="email" placeholder="you@example.com" autocomplete="email" required />
+        <span class="field__error" data-for="email"></span>
+      </label>
+
+      <label class="field">
+        <span class="field__label">Password</span>
+        <span class="field__wrap">
+          <input class="field__input" type="password" id="password" name="password" placeholder="••••••••" autocomplete="current-password" required />
+          <button class="field__reveal" type="button" id="revealBtn" aria-label="Show password">👁</button>
+        </span>
+        <span class="field__error" data-for="password"></span>
+      </label>
+
+      <div class="auth__row">
+        <label class="auth__check">
+          <input type="checkbox" id="remember" checked />
+          <span>Keep me signed in</span>
+        </label>
+        <a class="auth__link" href="#" id="forgot">Forgot password?</a>
+      </div>
+
+      <button class="btn btn--big btn--yellow auth__submit" type="submit" id="submitBtn">
+        <span id="submitLabel">Sign in</span>
+      </button>
+
+      <p class="auth__msg" id="authMsg" role="status"></p>
+    </form>
+
+    <p class="auth__legal">
+      By continuing you agree to the terms. We only use your email to keep your progress
+      and, if you join Pro, to send your receipt.
+    </p>
+  </section>
+</main>
+
+<footer class="checkout-foot">
+  <span>© 2026 Build with YOU</span>
+  <span><a href="index.html#membership">Membership</a> · <a href="index.html#faq">FAQ</a></span>
+</footer>
+
+<script src="auth.config.js"></script>
+<script src="auth.js"></script>
+<script src="login.js"></script>
+</body>
+</html>

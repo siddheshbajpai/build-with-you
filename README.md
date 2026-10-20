@@ -5,6 +5,11 @@ A neubrutalist tech-school site. **Phase 1 of every course is free forever**; a 
 
 - **`index.html`** — the whole page (nav, hero, marquee, why, learning paths, courses, resources, membership, community, FAQ, footer, course modal)
 - **`checkout.html`** — the Pro membership checkout page (same theme, same background engine)
+- **`login.html`** — sign in / create account (Google, Discord, GitHub + local email)
+- **`account.html`** — the member's own page (plan, theme, courses)
+- **`admin.html`** — the admin console (theme control, Pro grants, member roles)
+- **`auth.js`** — the auth layer (OAuth start/callback, local accounts, roles, theme)
+- **`auth.config.js`** — where you drop your OAuth client IDs
 - **`styles.css`** — the neubrutalist design system + the fixed animated background layer
 - **`script.js`** — background engine, scroll orchestration, course modal / phase locks / paywall
 - **`checkout.js`** — payment form logic (validation, formatting, success state)
@@ -65,6 +70,44 @@ Course data lives in the `COURSES` object in `script.js` — add a course there 
 > The checkout is a **demo**: it validates the card (Luhn, expiry, CVC) but does not process a real
 > payment and nothing leaves the browser. Swap the `setTimeout` in `checkout.js` for a Stripe
 > Checkout session to make it live.
+
+## Accounts & the admin
+
+| | |
+|---|---|
+| **Sign in** | `login.html` — Google / Discord / GitHub buttons, plus email + password |
+| **Admin** | `admin@buildwithyou.dev` / `Admin@2026` |
+| **My account** | `account.html` — plan, theme, your courses |
+
+The admin account holds **Pro on every course** and unlocks `admin.html`, where you can:
+
+- switch the site theme (**Light / Dark / System**) and set the default for new visitors
+- grant or revoke Pro for any member
+- promote or demote members to admin
+
+### Connecting the OAuth buttons
+
+The three provider buttons work out of the box in **demo mode** (they sign you in locally, nothing
+is sent anywhere). To make them real, fill in `auth.config.js`:
+
+```js
+window.AUTH_CONFIG = {
+  google: { clientId: '...', redirectUri: 'https://.../login.html' },
+  discord: { clientId: '...', redirectUri: 'https://.../login.html' },
+  github:  { clientId: '...', redirectUri: 'https://.../login.html' },
+  exchangeUrl: 'https://your-api.example.com/session', // optional
+  forceDemo: false
+};
+```
+
+Each provider's redirect URI must match exactly. The `?code=…` callback is exchanged for a session by
+`exchangeUrl` (a tiny backend of your choice); without it the callback completes locally in demo mode.
+
+### Local accounts
+
+Email + password accounts are stored in `localStorage` with a per-user random salt and a SHA-256
+hash — the plain password is never written down. **This is a front-end demo auth layer**: real
+enforcement needs a server, so treat these accounts as a local convenience, not a security boundary.
 
 ## Responsive check
 

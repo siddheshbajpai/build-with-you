@@ -11,6 +11,20 @@
 <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='18' fill='%23FFD426'/><rect x='14' y='30' width='72' height='44' rx='8' fill='%23111'/><rect x='22' y='38' width='56' height='8' fill='%23FF5D8F'/><rect x='22' y='52' width='36' height='8' fill='%2335E0E8'/></svg>">
 <link rel="stylesheet" href="styles.css" />
+<script>
+  /* apply the saved theme before first paint (no flash) */
+  (function () {
+    try {
+      var pref = JSON.parse(localStorage.getItem('bwy_theme') || 'null') ||
+                 JSON.parse(localStorage.getItem('bwy_default_theme') || '"light"');
+      var t = (pref === 'system')
+        ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+        : (pref || 'light');
+      document.documentElement.setAttribute('data-theme', t);
+      document.documentElement.style.colorScheme = t;
+    } catch (e) {}
+  })();
+</script>
 <noscript><style>.reveal{opacity:1 !important;transform:none !important}</style></noscript>
 </head>
 <body>
@@ -45,6 +59,16 @@
   </nav>
 
   <a class="btn btn--sm btn--dark nav__cta" href="#courses">Start learning</a>
+
+  <div class="nav__tools">
+    <button class="nav__tool" id="themeToggle" type="button" aria-label="Switch theme" title="Light / dark">
+      <span class="nav__tool-icon" id="themeIcon">☀</span>
+    </button>
+    <a class="nav__tool nav__tool--account" id="accountLink" href="login.html" aria-label="Sign in">
+      <span class="nav__tool-icon" id="accountIcon">👤</span>
+      <span class="nav__tool-label" id="accountLabel">Sign in</span>
+    </a>
+  </div>
 
   <button class="nav__toggle" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks">
     <span></span><span></span><span></span>
@@ -731,6 +755,12 @@
         <a href="#faq">Pricing FAQ</a>
       </div>
       <div class="footer__col">
+        <h4>Account</h4>
+        <a href="login.html">Sign in</a>
+        <a href="account.html">My account</a>
+        <a href="admin.html">Admin console</a>
+      </div>
+      <div class="footer__col">
         <h4>Community</h4>
         <a href="#community">Forum</a>
         <a href="#community">Discord</a>
@@ -780,6 +810,8 @@
 <!-- toast -->
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
+<script src="auth.config.js"></script>
+<script src="auth.js"></script>
 <script src="script.js"></script>
 </body>
 </html>

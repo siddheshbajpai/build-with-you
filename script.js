@@ -758,7 +758,7 @@
   let activeCourse = null;
   let activeCourseId = null;
   let activePhase = null;
-  let proActive = readPro();
+  let proActive = Auth.hasPro();
   let lastFocused = null;
 
   function phaseNumber(p) {
@@ -989,6 +989,71 @@
     }
     openCourse(cid, qp.get('phase'));
   })();
+
+  /* ------------------------------------------------------------
+     11.5 ACCOUNT + THEME
+     The nav reflects the signed-in member, and the theme toggle
+     switches the whole site between light and dark.
+  ------------------------------------------------------------ */
+  const themeToggle = document.getElementById('themeToggle');
+  const themeIcon = document.getElementById('themeIcon');
+  const accountLink = document.getElementById('accountLink');
+  const accountIcon = document.getElementById('accountIcon');
+  const accountLabel = document.getElementById('accountLabel');
+
+  function paintThemeIcon() {
+    if (!themeIcon) return;
+    const pref = Auth.getTheme();
+    const eff = Auth.effectiveTheme();
+    themeIcon.textContent = pref === 'system' ? '◐' : (eff === 'dark' ? '☾' : '☀');
+    themeToggle.setAttribute('title',
+      pref === 'system' ? 'Theme: system (' + eff + ')' : 'Theme: ' + eff + ' — click to switch');
+  }
+
+  function paintAccount() {
+    if (!accountLink) return;
+    const user = Auth.getUser();
+    accountLink.classList.remove('is-pro', 'is-admin');
+    if (!user) {
+      accountIcon.textContent = '👤';
+      accountLabel.textContent = 'Sign in';
+      accountLink.setAttribute('href', 'login.html');
+      accountLink.setAttribute('aria-label', 'Sign in');
+      return;
+    }
+    accountIcon.textContent = user.role === 'admin' ? '★' : (Auth.hasPro() ? '⚡' : '👤');
+    accountLabel.textContent = user.role === 'admin' ? 'Admin' : (user.name || user.email).split(' ')[0];
+    accountLink.setAttribute('href', user.role === 'admin' ? 'admin.html' : 'account.html');
+    accountLink.setAttribute('aria-label', 'Signed in as ' + (user.name || user.email));
+    if (user.role === 'admin') accountLink.classList.add('is-admin');
+    else if (Auth.hasPro()) accountLink.classList.add('is-pro');
+  }
+
+  if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+      const eff = Auth.effectiveTheme();
+      Auth.setTheme(eff === 'dark' ? 'light' : 'dark');
+      paintThemeIcon();
+      paintAccount();
+    });
+  }
+
+  if (window.matchMedia) {
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+      if (Auth.getTheme() === 'system') { Auth.applyTheme(); paintThemeIcon(); }
+    });
+  }
+
+  // keep the nav in sync no matter who changed the theme
+  if (window.MutationObserver && root.getAttribute('data-theme')) {
+    new MutationObserver(function () {
+      paintThemeIcon();
+      paintAccount();
+    }).observe(root, { attributes: true, attributeFilter: ['data-theme'] });
+  }
+
+  paintThemeIcon();
+  paintAccount();
 
   /* ------------------------------------------------------------
      12. LIFECYCLE
