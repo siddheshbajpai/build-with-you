@@ -101,7 +101,10 @@ a { color: inherit; }
   will-change: transform;
 }
 
-/* Film-grain / paper texture */
+/* Film-grain / paper texture.
+   The blend mode forces a full-screen composite every frame the canvas
+   underneath repaints, so it is dropped on phones where smoothness
+   matters more than grain. */
 .bg-noise {
   position: absolute;
   inset: 0;
@@ -109,6 +112,10 @@ a { color: inherit; }
   mix-blend-mode: multiply;
   pointer-events: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.28'/%3E%3C/svg%3E");
+}
+@media (max-width: 720px) {
+  .bg-noise { display: none; }
+  .bg-grid { background-size: 48px 48px; }
 }
 
 .bg-vignette {
@@ -1131,9 +1138,11 @@ a { color: inherit; }
   opacity: 0;
   transform: translateY(28px);
   transition: opacity .6s cubic-bezier(.2,.8,.3,1) var(--d, 0s), transform .6s cubic-bezier(.2,.8,.3,1) var(--d, 0s);
-  will-change: transform, opacity;
 }
 .reveal.is-visible { opacity: 1; transform: none; }
+/* no will-change here: 50+ promoted layers cost more than they save.
+   The compositor promotes the element for the duration of the fade
+   anyway, because transform/opacity are the only animated properties. */
 
 /* ============================================================
    COURSE MODAL
@@ -2768,7 +2777,6 @@ html[data-theme="dark"] .admin__panelhead p { color: #A8A3B4; }
   .cmp__table thead th:first-child { width: 46%; }
   .cmp__table tbody th, .cmp__table td, .cmp__table thead th { padding: 10px 12px; font-size: .88rem; }
 }
-
 @media (max-width: 1040px) {
   .bento { grid-template-columns: repeat(2, 1fr); }
   .card--wide { grid-column: span 2; }
@@ -2811,6 +2819,7 @@ html[data-theme="dark"] .admin__panelhead p { color: #A8A3B4; }
   .curriculum__side { grid-template-columns: 1fr; }
   .footer__top { grid-template-columns: 1fr; }
   .hero__stats { grid-template-columns: repeat(2, 1fr); }
+  .nav__tools { margin-left: auto; }
 }
 
 @media (max-width: 620px) {
@@ -2827,6 +2836,75 @@ html[data-theme="dark"] .admin__panelhead p { color: #A8A3B4; }
   .cta-band { padding: 24px 20px; }
   .course-hero__body { padding: 26px 20px; }
   .course-hero__media { padding: 18px 16px; }
+
+  /* the nav has to survive a 360px phone: brand + tools only */
+  .nav { padding: 8px 10px 8px 12px; gap: 10px; }
+  .nav__brand-text { font-size: 15px; }
+  .nav__mark { width: 26px; height: 26px; }
+  .nav__tool { height: 38px; padding: 0 10px; }
+  .nav__toggle { width: 40px; height: 38px; }
+  .hero__badge { font-size: 10px; letter-spacing: .05em; padding: 8px 12px; }
+  .hero__title { font-size: clamp(2.6rem, 15vw, 4rem); }
+  .hero__stats { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .stat { padding: 12px 8px; }
+
+  /* the comparison table gets its own scroll area */
+  .cmp { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .cmp__table { min-width: 480px; }
+}
+
+/* very small phones */
+@media (max-width: 380px) {
+  .nav__brand-text { font-size: 14px; }
+  .hero__title { font-size: clamp(2.2rem, 14vw, 3.2rem); }
+  .btn--big { font-size: 17px; padding: 14px 20px; }
+  .hero__actions .btn { width: 100%; }
+  .footer__cols { grid-template-columns: 1fr; }
+}
+
+/* touch devices: bigger hit targets */
+@media (pointer: coarse) {
+  .btn { min-height: 48px; }
+  .btn--sm { min-height: 42px; }
+  .nav__tool { height: 44px; min-width: 44px; }
+  .nav__toggle { height: 44px; width: 44px; }
+  .module__head { padding: 18px 16px; }
+  .phase { padding: 14px 12px; }
+  .oauthbtn { padding: 14px; }
+  .theme { padding: 12px; }
+}
+
+/* ============================================================
+   MOBILE MODAL — phases become a horizontal strip
+   ============================================================ */
+@media (max-width: 860px) {
+  .modal { padding: 0; align-items: flex-end; }
+  .modal__panel { max-height: 94vh; border-radius: var(--radius) var(--radius) 0 0; }
+  .modal__body { grid-template-columns: 1fr; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+  .modal__head {
+    position: sticky; top: 0; z-index: 3;
+    padding: 20px 18px 14px;
+  }
+  .phases {
+    border-right: none;
+    border-bottom: var(--border) solid var(--edge);
+    overflow: visible;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    padding: 12px 16px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x proximity;
+  }
+  .phase {
+    flex: 0 0 auto;
+    min-width: 172px;
+    scroll-snap-align: start;
+  }
+  .pd { overflow: visible; }
+  .modal__meta, .modal__foot { padding-left: 18px; padding-right: 18px; }
+  .modal__foot { position: sticky; bottom: 0; background: var(--paper-2); z-index: 3; }
 }
 
 /* ============================================================

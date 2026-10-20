@@ -112,3 +112,25 @@ enforcement needs a server, so treat these accounts as a local convenience, not 
 ## Responsive check
 
 `_test/harness.html` shows the site side by side at 1400px, 900px and 390px.
+
+## Performance & smoothness
+
+The site is tuned so scrolling stays smooth on a phone, a tablet and a desktop without a single
+re-layout glitch:
+
+| Technique | Where |
+|---|---|
+| The background is a **fixed** layer | it never scrolls with the document, so nothing repaints under it |
+| **One rAF loop** drives background, parallax, progress bar and nav state | they can never desync |
+| A **`setInterval` fallback** takes over when rAF is paused | background tabs / throttled frames still animate |
+| The canvas backing store is **smaller than the display size on phones** (0.62×) | ~4× less fill rate; soft blobs hide the upscale |
+| Fewer blobs on small screens (4–5 instead of 7) | less overdraw |
+| **Cached section offsets** + throttled checks (120ms / 140ms / 800ms) | no layout reads in the hot path |
+| CSS variables are written **only when the value changed** | no pointless style recalcs |
+| The film-grain layer (a blend mode) is **dropped under 720px** | a blend over a repainting canvas is expensive |
+| The terminal types by **appending nodes**, not re-parsing innerHTML | no per-character parse |
+| No `will-change` on 50+ reveal elements | layers cost more than they save |
+| The modal header/footer are **sticky** and the phase rail becomes a **horizontal strip** on phones | the content is always one thumb-tap away |
+| Touch targets are **≥44px** on coarse pointers, the comparison table gets its **own scroll area** | usable with a thumb, no page-level sideways scroll |
+
+Verified with no horizontal overflow at 360px, 390px, 768px, 1000px and 1400px.

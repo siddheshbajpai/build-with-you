@@ -26,7 +26,8 @@
   const blobs = [];
   function makeBlobs() {
     blobs.length = 0;
-    for (let i = 0; i < 6; i++) {
+    const count = window.innerWidth <= 860 ? 4 : 6;
+    for (let i = 0; i < count; i++) {
       const p = PALETTE[i % PALETTE.length];
       blobs.push({
         color: p,
@@ -45,13 +46,15 @@
   }
 
   function resizeCanvas() {
-    const DPR = Math.min(window.devicePixelRatio || 1, 2);
     W = window.innerWidth; H = window.innerHeight;
-    canvas.width = Math.floor(W * DPR);
-    canvas.height = Math.floor(H * DPR);
-    canvas.style.width = W + 'px';
-    canvas.style.height = H + 'px';
-    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    const small = W <= 640, mobile = W <= 860;
+    const scale = small ? 0.62 : (mobile ? 0.8 : 1);
+    const dpr = Math.min(window.devicePixelRatio || 1, small ? 1.5 : 2) * scale;
+    canvas.width = Math.max(1, Math.floor(W * dpr));
+    canvas.height = Math.max(1, Math.floor(H * dpr));
+    canvas.style.width = '100%';
+    canvas.style.height = '100%';
+    ctx.setTransform(canvas.width / W, 0, 0, canvas.height / H, 0, 0);
   }
 
   function lerp(a, b, t) { return a + (b - a) * t; }

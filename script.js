@@ -32,10 +32,19 @@
        - advances its phase with scroll, so scrolling further
          changes what you see (scroll drives the animation)
        - reacts to scroll velocity with a short "pulse"
+
+     Performance notes: the canvas backing store is smaller than the
+     display size on phones (soft blobs hide the upscale), blobs are
+     drawn in one pass and every per-frame value is written only when
+     it actually changed, so the compositor is never woken up for a
+     no-op.
   ------------------------------------------------------------ */
   const canvas = document.getElementById('bgCanvas');
   const ctx = canvas.getContext('2d', { alpha: true });
   let W = 0, H = 0, DPR = 1;
+
+  const isSmall = () => window.innerWidth <= 640;
+  const isMobile = () => window.innerWidth <= 860;
 
   const PALETTE = [
     { h: 44,  s: 100, l: 66 },  // yellow
@@ -47,21 +56,24 @@
     { h: 205, s: 95,  l: 72 }   // blue
   ];
 
-  const BLOB_COUNT = 7;
-  const blobs = [];
+  let blobs = [];
 
   function makeBlobs() {
+    const count = isMobile() ? 5 : 7;
     blobs.length = 0;
-    for (let i = 0; i < BLOB_COUNT; i++) {
+    for (let i = 0; i < count; i++) {
       const p = PALETTE[i % PALETTE.length];
+      const ax = 0.12 + Math.random() * 0.76;
+      const ay = 0.10 + Math.random() * 0.80;
       blobs.push({
         color: p,
         // normalised anchor position
-        ax: 0.12 + Math.random() * 0.76,
-        ay: 0.10 + Math.random() * 0.80,
-        // current (smoothed) position
-        x: 0, y: 0,
-        tx: 0, ty: 0,
+        ax: ax,
+        ay: ay,
+        // current (smoothed) position — starts at the anchor so the
+        // background never "grows" out of the corner on first paint
+        x: ax, y: ay,
+        tx: ax, ty: ay,
         r: 0.20 + Math.random() * 0.26,
         // motion params
         sx: 0.10 + Math.random() * 0.22,
@@ -76,14 +88,20 @@
   }
 
   function resizeCanvas() {
-    DPR = Math.min(window.devicePixelRatio || 1, 2);
     W = window.innerWidth;
     H = window.innerHeight;
-    canvas.width = Math.floor(W * DPR);
-    canvas.height = Math.floor(H * DPR);
-    canvas.style.width = W + 'px';
-    canvas.style.height = H + 'px';
-    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    // phones get a smaller backing store + a lower DPR: the blobs are
+    // soft gradients, so the upscale is invisible but the fill rate
+    // (and therefore the battery bill) drops sharply.
+    const scale = isSmall() ? 0.62 : (isMobile() ? 0.8 : 1);
+    DPR = Math.min(window.devicePixelRatio || 1, isSmall() ? 1.5 : 2) * scale;
+    canvas.width = Math.max(1, Math.floor(W * DPR));
+    canvas.height = Math.max(1, Math.floor(H * DPR));
+    // the element itself is sized by CSS, so a late resize never
+    // leaves a stretched (blurry) or clipped canvas behind
+    canvas.style.width = '100%';
+    canvas.style.height = '100%';
+    ctx.setTransform(canvas.width / W, 0, 0, canvas.height / H, 0, 0);
   }
 
   function lerp(a, b, t) { return a + (b - a) * t; }
@@ -148,6 +166,15 @@
   let lastTick = performance.now();
   let fallbackId = null;
 
+  // cached values so the hot path never writes the same thing twice
+  let lastScrollY = -1;
+  let lastProgressPx = -1;
+  let lastStuck = null;
+  let lastSectionMeasure = 0;
+  let lastVisibilityCheck = 0;
+  let lastActiveCheck = 0;
+  let viewportH = window.innerHeight;
+
   function tick(time) {
     const dt = Math.min(time - last, 50) || 16;
     last = time;
@@ -168,21 +195,42 @@
 
     state.progress = Math.min(1, Math.max(0, state.smooth / state.max));
 
-    // --- publish to CSS -------------------------------------
-    root.style.setProperty('--scrollY', state.smooth.toFixed(2));
-    root.style.setProperty('--scrollP', state.progress.toFixed(4));
-    root.style.setProperty('--scrollV', state.velocity.toFixed(3));
+    const moved = Math.abs(state.smooth - lastScrollY) > 0.4;
 
-    // --- progress bar ---------------------------------------
-    const bar = document.getElementById('progressBar');
-    if (bar) bar.style.width = (state.progress * 100).toFixed(2) + '%';
+    // --- publish to CSS (only when the value actually moved) ---
+    if (moved) {
+      root.style.setProperty('--scrollY', state.smooth.toFixed(1));
+      root.style.setProperty('--scrollP', state.progress.toFixed(3));
+      lastScrollY = state.smooth;
+    }
+
+    // --- progress bar (throttled: it repaints a full-width layer)
+    const progressPx = Math.round(state.progress * 1000) / 10;
+    if (progressPx !== lastProgressPx) {
+      const bar = document.getElementById('progressBar');
+      if (bar) bar.style.width = progressPx + '%';
+      lastProgressPx = progressPx;
+    }
 
     // --- nav state ------------------------------------------
-    nav.classList.toggle('is-stuck', state.raw > 40);
-    updateActiveLink();
+    const stuck = state.raw > 40;
+    if (stuck !== lastStuck) {
+      nav.classList.toggle('is-stuck', stuck);
+      lastStuck = stuck;
+    }
 
-    // --- reveal anything that is in view (throttled) --------
-    if (time - lastVisibilityCheck > 110) {
+    // --- active section + reveals (throttled, layout reads) ---
+    if (time - lastActiveCheck > 120) {
+      lastActiveCheck = time;
+      updateActiveLink();
+    }
+    if (time - lastSectionMeasure > 800) {
+      // the page height changes when an accordion opens, so refresh
+      // the cached offsets now and then (5 cheap reads)
+      lastSectionMeasure = time;
+      measureSections();
+    }
+    if (moved && time - lastVisibilityCheck > 140) {
       lastVisibilityCheck = time;
       checkVisibility();
     }
@@ -216,7 +264,6 @@
   ------------------------------------------------------------ */
   const revealEls = Array.from(document.querySelectorAll('.reveal'));
   const countEls = Array.from(document.querySelectorAll('[data-count]'));
-  let lastVisibilityCheck = 0;
 
   function checkVisibility() {
     const vh = window.innerHeight;
@@ -267,18 +314,30 @@
     .filter((s) => s.el);
 
   let activeLink = null;
+  let sectionOffsets = [];
+
+  // Section offsets are cached and refreshed on a slow timer, so the
+  // scroll handler never forces a layout just to find the active link.
+  function measureSections() {
+    sectionOffsets = sections.map(function (s) {
+      return { link: s.link, el: s.el, top: s.el.offsetTop };
+    });
+  }
 
   function updateActiveLink() {
-    if (!sections.length) return;
+    if (!sectionOffsets.length) {
+      measureSections();
+      if (!sectionOffsets.length) return;
+    }
     // the "current" section is the last one whose top has passed
     // the reading line (a third down the viewport)
-    const line = state.smooth + window.innerHeight * 0.34;
+    const line = state.smooth + viewportH * 0.34;
     let current = null;
-    for (const s of sections) {
-      if (s.el.offsetTop <= line) current = s;
+    for (const s of sectionOffsets) {
+      if (s.top <= line) current = s;
     }
     // near the very bottom, always highlight the last section
-    if (state.progress > 0.985) current = sections[sections.length - 1];
+    if (state.progress > 0.985 && sectionOffsets.length) current = sectionOffsets[sectionOffsets.length - 1];
 
     if (current && current.link !== activeLink) {
       navLinks.forEach((a) => {
@@ -287,7 +346,7 @@
         a.style.transform = '';
       });
       current.link.style.background = 'var(--yellow)';
-      current.link.style.borderColor = 'var(--ink)';
+      current.link.style.borderColor = 'var(--edge)';
       current.link.style.transform = 'translateY(-2px)';
       activeLink = current.link;
     }
@@ -322,7 +381,10 @@
   /* ------------------------------------------------------------
      7. ANIMATED COUNTERS
   ------------------------------------------------------------ */
-  const counters = document.querySelectorAll('[data-count]');
+  const raf = window.requestAnimationFrame
+    ? window.requestAnimationFrame.bind(window)
+    : function (fn) { return setTimeout(fn, 16); };
+
   function animateCount(el) {
     if (el.dataset.done) return;
     el.dataset.done = '1';
@@ -337,9 +399,9 @@
       const eased = 1 - Math.pow(1 - p, 3);
       const val = Math.round(target * eased);
       el.textContent = prefix + val + suffix;
-      if (p < 1) setTimeout(step, 16);
+      if (p < 1) raf(step);
     }
-    setTimeout(step, 16);
+    raf(step);
   }
 
   /* ------------------------------------------------------------
@@ -370,36 +432,40 @@
         if (idx < LINES.length - 1) stream.push({ ch: '\n', c: '' });
       });
 
-      const CURSOR = '<span class="t-cursor">▊</span>';
-      let buffer = '';   // completed, closed html
-      let openClass = null;
+      // Build the DOM incrementally — re-parsing innerHTML for every
+      // character is what makes a typing effect stutter on slow phones.
+      const cursorEl = document.createElement('span');
+      cursorEl.className = 't-cursor';
+      cursorEl.textContent = '▊';
+
+      let openSpan = null;
       let i = 0;
 
-      function render(extra) {
-        let out = buffer;
-        if (openClass !== null) out += '</span>';
-        return out + (extra || '');
-      }
-
-      function tick() {
+      function typeNext() {
         if (i >= stream.length) {
-          termBody.innerHTML = render('');
+          if (openSpan) { termBody.appendChild(openSpan); openSpan = null; }
           return;
         }
         const item = stream[i++];
-        if (item.c !== openClass) {
-          if (openClass !== null) buffer += '</span>';
-          buffer += '<span class="' + item.c + '">' + escapeHtml(item.ch);
-          openClass = item.c;
-        } else {
-          buffer += escapeHtml(item.ch);
+
+        if (item.c !== (openSpan ? openSpan.className : null)) {
+          if (openSpan) { termBody.appendChild(openSpan); openSpan = null; }
+          if (item.c) {
+            openSpan = document.createElement('span');
+            openSpan.className = item.c;
+          }
         }
-        termBody.innerHTML = render(CURSOR);
-        setTimeout(tick, item.ch === '\n' ? 120 : 18);
+        const text = document.createTextNode(item.ch);
+        if (openSpan) openSpan.appendChild(text);
+        else termBody.appendChild(text);
+
+        termBody.appendChild(cursorEl);   // keep the caret at the end
+        setTimeout(typeNext, item.ch === '\n' ? 120 : 18);
       }
 
-      termBody.innerHTML = CURSOR;
-      setTimeout(tick, 350);
+      termBody.textContent = '';
+      termBody.appendChild(cursorEl);
+      setTimeout(typeNext, 350);
     }
   }
 
@@ -1062,7 +1128,10 @@
   window.addEventListener('resize', () => {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(() => {
+      viewportH = window.innerHeight;
       resizeCanvas();
+      makeBlobs();
+      measureSections();
       measure();
     }, 120);
   });
@@ -1079,9 +1148,12 @@
   });
 
   // re-measure when layout settles (fonts, images)
-  window.addEventListener('load', measure);
+  window.addEventListener('load', () => {
+    measure();
+    measureSections();
+  });
   if (document.fonts && document.fonts.ready) {
-    document.fonts.ready.then(measure).catch(() => {});
+    document.fonts.ready.then(() => { measure(); measureSections(); }).catch(() => {});
   }
 
   // year stamp
@@ -1092,11 +1164,14 @@
   makeBlobs();
   resizeCanvas();
   measure();
+  measureSections();
+  viewportH = window.innerHeight;
   state.smooth = window.scrollY || 0;
   state.raw = state.smooth;
   last = performance.now();
   lastTick = last;
   tick(last);          // paint one frame right away (no waiting on rAF)
+  checkVisibility();   // reveal whatever is already on screen
   requestAnimationFrame(frame);
   ensureFallback();
 })();

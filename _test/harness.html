@@ -5,23 +5,30 @@
 <title>Build with YOU — responsive harness</title>
 <style>
   body { margin:0; background:#1b1b1b; font-family: monospace; color:#8f8; }
-  .row { display:flex; gap:14px; padding:10px; align-items:flex-start; }
+  .row { display:flex; gap:14px; padding:10px; align-items:flex-start; flex-wrap:wrap; }
   .lbl { padding:2px 0; font-size:12px; }
-  .holder { width:770px; height:500px; overflow:hidden; border:2px solid #0f0; }
-  .holder iframe { border:0; width:1400px; height:900px; transform:scale(0.55); transform-origin: top left; display:block; }
-  .m-holder { width:420px; height:740px; overflow:hidden; border:2px solid #f0f; }
-  .m-holder iframe { border:0; width:390px; height:760px; display:block; }
+  .holder { overflow:hidden; border:2px solid #0f0; position:relative; }
+  .holder iframe { border:0; display:block; transform-origin: top left; }
+  .m { width:390px; height:740px; }
+  .m iframe { width:390px; height:844px; }
+  .t { width:768px; height:520px; }
+  .t iframe { width:768px; height:1024px; transform:scale(0.5); }
 </style>
 </head>
 <body>
 <div class="row">
   <div>
-    <div class="lbl">DESKTOP 1400 (scaled)</div>
-    <div class="holder"><iframe id="f1" src="/index.html"></iframe></div>
+    <div class="lbl">MOBILE 390x844</div>
+    <div class="holder m"><iframe id="f1" src="/index.html"></iframe></div>
   </div>
   <div>
-    <div class="lbl">MOBILE 390</div>
-    <div class="m-holder"><iframe id="f3" src="/index.html"></iframe></div>
-  </div></div>
+    <div class="lbl">TABLET 768x1024 (50%)</div>
+    <div class="holder t"><iframe id="f2" src="/index.html"></iframe></div>
+  </div>
+  <div>
+    <div class="lbl">SMALL 360x740</div>
+    <div class="holder" style="width:360px;height:740px"><iframe id="f3" src="/index.html" style="width:360px;height:740px"></iframe></div>
+  </div>
+</div>
 </body>
 </html>
